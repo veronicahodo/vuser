@@ -3,7 +3,7 @@
 // vuser.php
 
 // User management class
-// Version 0.2.0
+// Version 0.2.1
 
 require_once('vcrud.php');
 
@@ -29,7 +29,7 @@ class VUSER
         $this->salt = random_bytes(32);
         $c->create('users', [
             'username' => $username,
-            'passwordHash' => hash('sha512', $password . $this->salt),
+            'passwordHash' => bin2hex(hash('sha512', $password . $this->salt)),
             'salt' => $this->salt
         ]);
     }
@@ -83,7 +83,7 @@ class VUSER
         // I'm obviously open to suggestions
         $user = $c->read('users', [['username', '=', $username]]);
         if ($user) {
-            if (hash('sha512', $password . $user[0]['salt']) === $user[0]['passwordHash']) {
+            if (bin2hex(hash('sha512', $password . $user[0]['salt'])) === $user[0]['passwordHash']) {
                 return $user[0]['userId'];
             } else {
                 return false;

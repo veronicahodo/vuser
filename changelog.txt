@@ -1,0 +1,8 @@
+VUSER changelog
+
+Version:
+--------
+    0.2.1 : Fixed password functions to store bin to hex values,
+        rather than raw binary.
+    0.2.0 : Modified to get away from using 'hash' as a column name
+    0.1.0 : First semi-functional attempt
