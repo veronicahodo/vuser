@@ -2,6 +2,7 @@ VUSER changelog
 
 Version:
 --------
+    0.2.2 : Turns out hash returns in hex so... reverting password functions.
     0.2.1 : Fixed password functions to store bin to hex values,
         rather than raw binary.
     0.2.0 : Modified to get away from using 'hash' as a column name
