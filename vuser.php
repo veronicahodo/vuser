@@ -3,77 +3,60 @@
 // vuser.php
 
 // User management class
-// Version 0.2.2
+// Version 0.3.0s
 
 require_once('vcrud.php');
 
 class VUSER
 {
-    private $userId;
+    private $fields;    // fields for the data
+    /*private $userId;
     private $username;
     private $passwordHash;      // sha512 hash of plain text password + salt
-    private $salt;
+    private $salt;*/
 
 
     function __construct()
     {
-        $this->userId = 0;
-        $this->username = '';
-        $this->passwordHash = '';
-        $this->salt = '';
+        $this->fields['userId'] = 0;
+        $this->fields['username'] = '';
+        $this->fields['passwordHash'] = '';
+        $this->fields['salt'] = '';
     }
 
 
     function create($username, $password, VCRUD $c)
     {
-        $this->salt = random_bytes(32);
-        $c->create('users', [
-            'username' => $username,
-            'passwordHash' => (hash('sha512', $password . $this->salt)),
-            'salt' => $this->salt
-        ]);
-    }
-
-    function load($userId, VCRUD $c)
-    {
-        $data = $c->read('users', [['userId', '=', $userId]]);
-        if ($data) {
-            $this->userId = $data[0]['userId'];
-            $this->username = $data[0]['username'];
-            $this->passwordHash = $data[0]['passwordHash'];
-            $this->salt = $data[0]['salt'];
-            return $data[0];
-        } else {
-            return false;
-        }
-    }
-
-    function save(VCRUD $c)
-    {
-        if ($this->userId > 0) {
-            $c->create('users', [
-                'username' => $this->username,
-                'hash' => $this->passwordHash,
-                'salt' => $this->salt
-            ]);
-        } else {
-            $c->update('users', [
-                'username' => $this->username,
-                'hash' => $this->passwordHash,
-                'salt' => $this->salt
-            ], [
-                ['userId', '=', $this->userId]
-            ]);
-        }
+        $this->fields['salt'] = random_bytes(32);
+        $c->create('users', $this->fields);
     }
 
 
-    function getUserData($userId, VCRUD $c)
+    function read($userId, VCRUD $c)
     {
-        $data = $c->read('userdata', [['userId', '=', $userId]]);
+        $this->fields = $c->read('users', [['userId', '=', $userId]]);
+    }
+
+
+    function update(VCRUD $c)
+    {
+        $c->update('users', $this->fields, [['userId', '=', $this->fields['userId']]]);
+    }
+
+    function delete(VCRUD $c)
+    {
+        $c->delete('users', [['userId', '=', $this->fields['userId']]]);
+    }
+
+
+
+    function getUserData(VCRUD $c)
+    {
+        $data = $c->read('userdata', [['userId', '=', $this->fields['userId']]]);
         // lol so not failsafe [TODO]
         return $data[0];
     }
+
 
     function validatePassword($username, $password, VCRUD $c)
     {

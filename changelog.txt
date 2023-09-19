@@ -2,6 +2,10 @@ VUSER changelog
 
 Version:
 --------
+    0.3.0 : Converted functions to behave like a true CRUD object instead of whatever
+            I was thinking I was doing before. This probably breaks anything I've done
+            with it, but that isn't anything major at this point so I'm clearly not too
+            worried about it
     0.2.2 : Turns out hash returns in hex so... reverting password functions.
     0.2.1 : Fixed password functions to store bin to hex values,
         rather than raw binary.
